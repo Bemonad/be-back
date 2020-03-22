@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const imageSchema = new mongoose.Schema({
-  id_room: ObjectId,
+  id_room: String,
   url: String,
 });
 
