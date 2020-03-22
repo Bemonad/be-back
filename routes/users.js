@@ -65,7 +65,7 @@ const users = (router) => {
         });
       }
       else {
-        res.json("No user found");
+        res.status(404).json("No user found");
       }
     });
 
