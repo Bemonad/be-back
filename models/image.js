@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const imageSchema = new mongoose.Schema({
-  urls: [String],
+  id_room: ObjectId,
+  url: String,
 });
 
 module.exports = mongoose.model('Image', imageSchema );
