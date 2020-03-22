@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const crud = require('../services/crud');
 const usersRouter = require('./users');
-const Room = require('../models/room');
-const Booking = require('../models/booking');
-const Image = require('../models/image');
+const roomsRouter = require('./rooms');
+const bookingsRouter = require('./bookings');
+const imagesRouter = require('./images');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -12,9 +11,8 @@ router.get('/', function(req, res, next) {
 });
 
 usersRouter(router);
-
-router.use('/rooms', crud(Room));
-router.use('/bookings', crud(Booking));
-router.use('/images', crud(Image));
+roomsRouter(router);
+bookingsRouter(router);
+imagesRouter(router);
 
 module.exports = router;
