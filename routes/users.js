@@ -94,11 +94,11 @@ const users = (router) => {
 
     const id = { _id: req.params.id };
 
-    User.deleteOne(id, function (err, prom) {
+    User.deleteOne(id, function (err, response) {
       if (err)
         console.log(err);
 
-      res.json(prom);
+      res.json(response);
     });
   });
 
