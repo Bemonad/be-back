@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const sendMail = require('../services/mail');
 
 const fieldsReturn = 'firstName lastName email role';
 
@@ -79,12 +81,13 @@ const users = (router) => {
     user.email = req.body.email;
     user.role = req.body.role || "user";
 
+    user.token = jwt.sign({email: user.email}, process.env.JWT_KEY);
 
     user.save(function (err, userUp) {
       if (err)
         console.log(err);
 
-      console.log(userUp)
+      sendMail(user);
       res.json("User created");
     });
   });
