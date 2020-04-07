@@ -83,11 +83,11 @@ const users = (router) => {
 
     user.token = jwt.sign({email: user.email}, process.env.JWT_KEY);
 
-    user.save(function (err, userUp) {
+    user.save(function (err, savedUser) {
       if (err)
         console.log(err);
 
-      sendMail(user);
+      sendMail(savedUser);
       res.json("User created");
     });
   });
