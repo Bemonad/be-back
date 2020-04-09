@@ -33,7 +33,7 @@ module.exports = (user) => {
     html: `
       <h1>Hello,</h1>
       <p>To register on Bemonad click the link below</p>
-      <a href=${process.env.FRONT_URL + '?id=' + user.token}>REGISTER</a>
+      <a href=${process.env.FRONT_URL + '/register/' + user.token}>REGISTER</a>
     `,
   };
 

@@ -1,9 +1,8 @@
 const User = require('../models/user');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const sendMail = require('../services/mail');
+const jwt = require('jsonwebtoken');
 
-const fieldsReturn = 'firstName lastName email role';
+const fieldsReturn = 'firstName lastName email role token';
 
 const users = (router) => {
   // Get all Users
@@ -18,78 +17,59 @@ const users = (router) => {
 
   });
 
-  // Get one User (By ID)
-  router.get('/users/:id', function (req, res, next) {
+  // Get one User (By JWT)
+  router.get('/users/:token', async (req, res, next) => {
 
-    const id = req.params.id;
+    try {
+      // const user = await User.findOne({ _id: data._id, token: token });
+      const token = req.params.token;
+      const user = await User.findByJWT(token);
 
-    User.findById(id, fieldsReturn, function (err, user) {
-      if (err)
-        console.log(err);
-
-      res.json(user);
-    });
+      if (!user) {
+        throw new Error('User not found')
+      }
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(401).send({ error: 'Not authorized to access this resource' })
+    }
 
   });
 
   // Update User
-  router.put('/users/:id', function (req, res, next) {
+  router.put('/users', async (req, res, next) => {
+    const user = await User.findByJWT(req.body.token);
 
-    const saltRounds = 10;
-    const id = req.params.id;
-
-    User.findById(id, fieldsReturn, function (err, user) {
-      if (err)
-        console.log(err);
-
-      if (user) {
-        bcrypt.genSalt(saltRounds, function (err, salt) {
-          if (err)
-            console.log(err);
-
-          bcrypt.hash(req.body.password, salt, function (err, hash) {
-            if (err)
-              console.log(err);
-
-            user.firstName = req.body.firstName;
-            user.lastName = req.body.lastName;
-            user.password = hash;
-            if (req.body.role)
-              user.role = req.body.role;
-
-            user.save(function (err, userUpdated) {
-              if (err)
-                console.log(err);
-
-              res.json("User updated");
-            });
-          });
-        });
+    if (user) {
+      if (req.body.password){
+        user.set('password', req.body.password);
+        user.set('token', '');
       }
-      else {
-        res.status(404).json("No user found");
-      }
-    });
+
+      await user.save();
+
+      res.status(204).json();
+    }
+    else {
+      res.status(404).json("No user found");
+    }
 
   });
 
   // Create User
-  router.post('/users', function (req, res, next) {
+  router.post('/users', async (req, res, next) => {
+    try {
+      const user = new User(req.body);
+      await user.save()
 
-    const user = new User();
+      user.role = req.body.role || "user";
+      const token = user.generateAuthToken();
 
-    user.email = req.body.email;
-    user.role = req.body.role || "user";
+      sendMail(user);
 
-    user.token = jwt.sign({email: user.email}, process.env.JWT_KEY);
-
-    user.save(function (err, savedUser) {
-      if (err)
-        console.log(err);
-
-      sendMail(savedUser);
-      res.json("User created");
-    });
+      res.status(201).json("User created");
+    } catch (error) {
+      res.status(400).send(error)
+    }
   });
 
   // Delete User
@@ -104,6 +84,22 @@ const users = (router) => {
       res.json(response);
     });
   });
+
+  router.post('/users/login', async(req, res) => {
+    //Login a registered user
+    try {
+      const { email, password } = req.body;
+      const user = await User.findByCredentials(email, password);
+      if (!user) {
+        return res.status(401).send({error: 'Login failed! Check authentication credentials'})
+      }
+      const token = await user.generateAuthToken();
+      res.send({ user, token })
+    } catch (error) {
+      res.status(400).send(error)
+    }
+
+  })
 
 };
 
