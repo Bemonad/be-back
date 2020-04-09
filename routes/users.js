@@ -42,6 +42,7 @@ const users = (router) => {
     if (user) {
       if (req.body.password){
         user.set('password', req.body.password);
+        user.set('token', '');
       }
 
       await user.save();
