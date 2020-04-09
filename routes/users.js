@@ -47,7 +47,7 @@ const users = (router) => {
 
       await user.save();
 
-      res.status(204).json(user);
+      res.status(204).json();
     }
     else {
       res.status(404).json("No user found");
