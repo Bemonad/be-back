@@ -39,7 +39,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function() {
 
     const user = this;
-    const token = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_KEY);
+    const token = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_KEY, { expiresIn: '1h' });
 
     user.token = token;
 
@@ -62,10 +62,10 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user
 };
 
-userSchema.statics.findByJWT = (token) => {
+userSchema.statics.findByJWT = (token, fieldsReturn = '') => {
     const data = jwt.verify(token, process.env.JWT_KEY);
 
-    return User.findOne({ _id: data._id, token: token });
+    return User.findOne({ _id: data._id, token: token }, fieldsReturn);
 };
 
 const User = mongoose.model('User', userSchema);
