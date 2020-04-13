@@ -23,7 +23,7 @@ const users = (router) => {
     try {
       // const user = await User.findOne({ _id: data._id, token: token });
       const token = req.params.token;
-      const user = await User.findByJWT(token);
+      const user = await User.findByJWT(token, fieldsReturn);
 
       if (!user) {
         throw new Error('User not found')
