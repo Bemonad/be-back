@@ -10,7 +10,7 @@ module.exports = (Collection) => {
         console.log(e);
         res.sendStatus(500);
       } else {
-        res.status(201).send(newEntry);
+        res.status(201).json(newEntry);
       }
     });
   };
