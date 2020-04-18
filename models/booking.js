@@ -11,4 +11,10 @@ const bookingSchema = new mongoose.Schema({
   status: Boolean,
 }, { timestamps: true });
 
-module.exports = mongoose.model('Booking', bookingSchema );
+bookingSchema.statics.findByUserId = (userId) => {
+  return Booking.find({user_id: userId});
+};
+
+const Booking = mongoose.model('Booking', bookingSchema );
+
+module.exports = Booking;

@@ -23,6 +23,19 @@ const bookings = (router) => {
     }
   });
 
+  router.get('/bookings', async (req, res, next) => {
+    if (req.query.userId) {
+      const userBookings = await Booking.findByUserId(req.query.userId);
+      if (userBookings.length > 0) {
+        res.status(200).json(userBookings)
+      } else {
+        res.status(404).json("No books found")
+      }
+    } else {
+      next()
+    }
+  });
+
   router.use('/bookings', crud(Booking));
 };
 
