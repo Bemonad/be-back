@@ -7,7 +7,7 @@ module.exports = (Collection) => {
     const newEntry = req.body;
     Collection.create(newEntry, (e,newEntry) => {
       if(e) {
-        console.log(e);
+        console.log(e.message);
         res.sendStatus(500);
       } else {
         res.status(201).json(newEntry);

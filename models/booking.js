@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectID;
 
 const bookingSchema = new mongoose.Schema({
   user_id: String,
-  id_room: String,
+  room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
   start: Date,
   end: Date,
   sit: Boolean,
@@ -10,7 +11,15 @@ const bookingSchema = new mongoose.Schema({
   number_people: Number,
   status: Boolean,
   weekNumber: Number
-}, { timestamps: true });
+}, { timestamps: true }); 
+
+bookingSchema.pre('save', async function (next) {
+  const booking = this;
+  if (typeof booking.room === 'string') {
+    booking.room = ObjectId(booking.room)
+  }
+  next()
+});
 
 bookingSchema.statics.findByUserId = (userId) => {
   return Booking.find({user_id: userId});
