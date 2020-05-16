@@ -24,8 +24,8 @@ const bookings = (router) => {
   });
 
   router.get('/bookings', async (req, res, next) => {
-    if (req.query.userId) {
-      const userBookings = await Booking.findByUserId(req.query.userId);
+    if (req.query.user) {
+      const userBookings = await Booking.findByUserId(req.query.user).populate('room');
       if (userBookings.length > 0) {
         res.status(200).json(userBookings)
       } else {
