@@ -44,6 +44,18 @@ const users = (router) => {
         user.set('password', req.body.password);
         user.set('token', '');
       }
+      if (req.body.firstName){
+        user.set('firstName', req.body.firstName);
+      }
+      if (req.body.lastName){
+        user.set('lastName', req.body.lastName);
+      }
+      if (req.body.email){
+        user.set('email', req.body.email);
+      }
+      if (req.body.role){
+        user.set('role', req.body.role);
+      }
 
       await user.save();
 
