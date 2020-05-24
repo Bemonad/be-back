@@ -37,7 +37,7 @@ const users = (router) => {
 
   // Update User
   router.put('/users', async (req, res, next) => {
-    const user = await User.findByJWT(req.body.token);
+    const user = await User.findById(req.body._id);
 
     if (user) {
       if (req.body.password){
