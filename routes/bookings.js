@@ -62,6 +62,15 @@ const bookings = (router) => {
     }
   });
 
+  router.get('/bookings', async (req, res, next) => {
+    const bookings = await Booking.find().populate('room').populate('user').sort({end: 'desc'});
+    if (bookings.length > 0) {
+      res.status(200).json(bookings)
+    } else {
+      res.status(404).json("No books found")
+    }
+  });
+
   router.use('/bookings', crud(Booking));
 };
 

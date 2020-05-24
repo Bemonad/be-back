@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectID;
 
 const bookingSchema = new mongoose.Schema({
-  user_id: String,
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
   start: Date,
   end: Date,
@@ -17,6 +17,9 @@ bookingSchema.pre('save', async function (next) {
   const booking = this;
   if (typeof booking.room === 'string') {
     booking.room = ObjectId(booking.room)
+  }
+  if (typeof booking.user === 'string') {
+    booking.user = ObjectId(booking.user)
   }
   next()
 });
