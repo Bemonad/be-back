@@ -25,7 +25,7 @@ bookingSchema.pre('save', async function (next) {
 });
 
 bookingSchema.statics.findByUserId = (userId) => {
-  return Booking.find({user_id: userId});
+  return Booking.find({user: ObjectId(userId)});
 };
 
 bookingSchema.statics.findByMonth = (date) => {

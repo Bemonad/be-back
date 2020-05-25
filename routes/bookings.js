@@ -71,6 +71,18 @@ const bookings = (router) => {
     }
   });
 
+  router.post('/bookings', async (req, res, next) => {
+    const booking = req.body;
+    try {
+      let populatedBooking = await Booking.create(booking)
+      populatedBooking = await populatedBooking.populate('room').execPopulate()
+      return res.status(201).json(populatedBooking);
+    } catch (error) {
+      console.error(e.message);
+      return res.sendStatus(500);
+    }
+  });
+
   router.use('/bookings', crud(Booking));
 };
 
