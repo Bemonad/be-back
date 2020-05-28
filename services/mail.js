@@ -6,11 +6,11 @@ module.exports = (user) => {
 
   if (process.env.NODE_ENV === 'prod' ){
     mailConfig = {
-      host: 'smtp.sendgrid.net',
-      port: 587,
+      host: 'smtp.mailtrap.io',
+      port: 2525,
       auth: {
-        user: 'real.user',
-        pass: 'verysecret'
+        user: process.env.EMAIL_USER_NAME,
+        pass: process.env.EMAIL_USER_PASSWORD,
       }
     };
   } else {
